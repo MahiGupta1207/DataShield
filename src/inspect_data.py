@@ -1,0 +1,15 @@
+import pandas as pd
+file_path = "data/raw/known_exploited_vulnerabilities (2).csv"
+df=pd.read_csv(file_path)
+print('First 5 rows:')
+print(df.head())
+print('\nDataset Shape:')
+print(df.shape)
+print('\nColumn Names:')
+print(df.columns)
+print('\nData Types:')
+print(df.dtypes)
+print('\nMissing Tables:')
+print(df.isnull().sum())
+print('\nDuplicated Rows:')
+print(df.duplicated().sum())
