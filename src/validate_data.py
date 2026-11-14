@@ -7,7 +7,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
-file_path = "data/raw/known_exploited_vulnerabilities (2).csv"
+file_path = "data/raw/known_exploited_vulnerabilities.csv"
 try:
     df = pd.read_csv(file_path)
     print("Dataset loaded successfully!")
