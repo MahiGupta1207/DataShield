@@ -1,6 +1,7 @@
 import pandas as pd
 import logging
 import sys
+from quality_checks import(check_required_columns,check_missing_values,check_duplicate_cves,check_cve_format,check_date_logic)
 logging.basicConfig(
     filename="logs/pipeline.log",
     level=logging.INFO,
@@ -23,32 +24,21 @@ print('Total Rows:',len(df))
 print('Total Columns:',len(df.columns))
 print('\nColumn Names:')
 print(df.columns.tolist())
-required_columns = ['cveID','vendorProject','product','dateAdded','dueDate']
-missing_columns=[]
-for column in required_columns:
-    if column not in df.columns:
-        missing_columns.append(column)
-if len(missing_columns)==0:
-    print('\nAll required columns are present.')
-    logging.info("All required columns are present")
-else:
-    print('\nMissing required columns:', missing_columns)
-    logging.error("Missing required columns: %s", missing_columns)
+if not check_required_columns(df):
+    logging.error("Required columns are missing")
     sys.exit(1)
-missing_values=df.isnull().sum()
-print('\nMissing Values in each Column:')
-print(missing_values)
-print('\nTotal Missing Values:',missing_values.sum())
-duplicate_cves=df['cveID'].duplicated().sum()
+logging.info("Required columns check passed")
+missing_values = check_missing_values(df)
+print("\nTotal Missing Values:", missing_values.sum())
+logging.info("Missing values check completed")
+duplicate_cves = check_duplicate_cves(df)
+logging.info("Duplicate CVE check completed")
 date_columns = ['dateAdded', 'dueDate']
 for column in date_columns:
     df[column] = pd.to_datetime(df[column], errors='coerce')
+    invalid_date_count = df[column].isnull().sum()
+    print(f"\nInvalid dates in {column}: {invalid_date_count}")
 print('\nDuplicate CVE IDs:',duplicate_cves)
-date_columns=['dateAdded','dueDate']
-for column in date_columns:
-    df[column]=pd.to_datetime(df[column],errors='coerce')
-    invalid_dates=df[column].isnull().sum()
-    print(f'\nInvalid dates in {column}:{invalid_dates}')
 df['cwes']=df['cwes'].fillna('Unknown')
 print('\nMissing CWE values after handling:')
 print(df['cwes'].isnull().sum())
@@ -67,10 +57,8 @@ print('Duplicate CVE IDs:', cleaned_df["cveID"].duplicated().sum())
 logging.info("Final dataset verification completed")
 empty_cve_ids=df['cveID'].isnull().sum()
 print('\nEmpty CVE IDs:',empty_cve_ids)
-invalid_cve_ide=df[~df['cveID'].str.match(r"^CVE-\d{4}-\d{4,}$",na=False)]
-print("\nInvalid CVE IDs:", len(invalid_cve_ide))
-print(invalid_cve_ide['cveID'])
-invalid_dates=df[df['dueDate']<df['dateAdded']]
-print('\nInvalid Data Records:',len(invalid_dates))
-print(invalid_dates[['cveID','dateAdded','dueDate']])
+invalid_cves = check_cve_format(df)
+logging.info("CVE format check completed")
+invalid_dates = check_date_logic(df)
+logging.info("Date logic check completed")
 print("\nData validation and cleaning completed successfully!")

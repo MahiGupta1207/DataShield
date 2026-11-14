@@ -56,11 +56,13 @@ DataShield/
 │
 ├── src/
 │   ├── inspect_data.py
-│   └── validate_data.py
+│   ├── validate_data.py
+│   └── quality_checks.py
 │
 ├── sql/
 │
 ├── logs/
+│   └── pipeline.log
 │
 ├── README.md
 ├── requirements.txt
@@ -111,7 +113,7 @@ The following operations were performed:
 
 ### 4. Data Validation
 
-Created `src/validate_data.py` to perform initial data quality checks.
+Created `src/validate_data.py` to perform data quality checks.
 
 The following validations were implemented:
 
@@ -119,9 +121,10 @@ The following validations were implemented:
 - Identified missing values in individual columns.
 - Checked duplicate CVE IDs.
 - Converted `dateAdded` and `dueDate` into datetime format.
-- Used `errors="coerce"` to identify invalid or missing date values.
+- Used `errors="coerce"` to handle invalid date values during conversion.
 
 **Required columns checked:**
+
 - `cveID`
 - `vendorProject`
 - `product`
@@ -143,6 +146,60 @@ Initial data cleaning operations included:
 `data/processed/cleaned_vulnerabilities.csv`
 
 The CSV is saved with `index=False` to avoid adding an unnecessary DataFrame index column.
+
+### 6. Advanced Data Quality Checks and Logging
+
+Improved the pipeline by implementing error handling, logging, and additional validation checks.
+
+**Error Handling and Logging:**
+
+- Used `try-except` blocks to handle file loading errors.
+- Added logging using Python's `logging` module.
+- Recorded successful dataset loading and processing.
+- Recorded validation and pipeline execution information.
+- Stored logs in `logs/pipeline.log`.
+
+**Additional Validation Checks:**
+
+- Checked for empty CVE IDs.
+- Validated CVE ID format using regular expressions.
+- Checked whether due dates occur before their corresponding added dates.
+- Verified the processed dataset after saving.
+
+### 7. Reusable Data Quality Functions
+
+Created a separate module named `src/quality_checks.py` to organize reusable validation functions.
+
+**Functions implemented:**
+
+| Function | Purpose |
+|---|---|
+| `check_required_columns(df)` | Checks whether all required columns exist |
+| `check_missing_values(df)` | Identifies missing values in each column |
+| `check_duplicate_cves(df)` | Detects duplicate CVE IDs |
+| `check_cve_format(df)` | Validates CVE ID format |
+| `check_date_logic(df)` | Checks date inconsistencies |
+
+Connected these functions to `src/validate_data.py` using Python imports.
+
+This improved code organization, reduced repeated logic, and made the validation process easier to maintain.
+
+**Latest Pipeline Validation Results**
+
+| Validation | Result |
+|---|---:|
+| Total records | 1,779 |
+| Total columns | 12 |
+| Missing values before cleaning | 175 |
+| Missing CWE values after cleaning | 0 |
+| Duplicate CVE IDs | 0 |
+| Invalid CVE IDs | 0 |
+| Empty CVE IDs | 0 |
+| Invalid `dateAdded` values | 0 |
+| Invalid `dueDate` values | 0 |
+| Invalid date logic records | 0 |
+
+The pipeline completed successfully, and the cleaned dataset was saved and verified.
 
 ## How to Run the Project
 
@@ -196,6 +253,7 @@ DataShield maintains separate storage for original and processed data.
 
 - `data/raw/` stores the original CISA dataset.
 - `data/processed/` stores the cleaned and processed dataset.
+- `logs/` stores pipeline execution logs.
 - The original dataset is not overwritten during processing.
 
 This separation helps maintain data integrity and allows the processed output to be compared with the original source.
@@ -204,14 +262,13 @@ This separation helps maintain data integrity and allows the processed output to
 
 The following features are planned for upcoming development:
 
-- Advanced data quality checks.
-- Improved error handling and logging.
 - Automated data ingestion.
 - PostgreSQL database integration.
 - SQL-based cybersecurity analytics.
 - Apache Airflow pipeline orchestration.
 - Automated pipeline monitoring.
 - Pipeline testing and performance improvements.
+- Advanced data transformations and reporting.
 
 ## License and Data Attribution
 
