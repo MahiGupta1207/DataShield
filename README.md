@@ -47,7 +47,8 @@ DataShield/
 │   │   └── known_exploited_vulnerabilities.csv
 │   │
 │   └── processed/
-│       └── cleaned_vulnerabilities.csv
+│       ├── cleaned_vulnerabilities.csv
+│       └── sample_vulnerabilities.csv
 │
 ├── notebooks/
 │
@@ -55,7 +56,8 @@ DataShield/
 │   ├── ingest_data.py
 │   ├── inspect_data.py
 │   ├── validate_data.py
-│   └── quality_checks.py
+│   ├── quality_checks.py
+│   └── data_utils.py
 │
 ├── sql/
 │
@@ -72,9 +74,9 @@ DataShield/
 ### 1. Automated Data Ingestion
 
 - Downloads the latest CISA KEV dataset directly from the official GitHub repository.
-- Uses Python's `urllib.request` library for downloading CSV data.
+- Uses Python's `urllib.request` library.
 - Stores downloaded data in the `data/raw/` directory.
-- Includes exception handling and logging for download operations.
+- Includes exception handling and logging.
 
 ### 2. Data Exploration
 
@@ -112,6 +114,17 @@ DataShield/
 - Records successful dataset downloads and verification.
 - Logs errors during file loading and ingestion.
 - Stores logs in `logs/pipeline.log`.
+
+### 7. Python Modules and File Handling
+
+- Created reusable utility functions in `data_utils.py`.
+- Practised importing functions from custom Python modules.
+- Implemented text file reading and writing.
+- Used write (`w`), read (`r`), and append (`a`) modes.
+- Used `with open()` for automatic file closing.
+- Read and wrote CSV files using Pandas.
+- Implemented file error handling using `try-except`.
+- Generated dataset summaries using reusable functions.
 
 ## Pipeline Workflow
 
@@ -196,7 +209,13 @@ pip install -r requirements.txt
 python src/ingest_data.py
 ```
 
-### 6. Run Data Validation and Cleaning
+### 6. Run Data Exploration
+
+```bash
+python src/inspect_data.py
+```
+
+### 7. Run Data Validation and Cleaning
 
 ```bash
 python src/validate_data.py
