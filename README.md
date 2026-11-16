@@ -1,249 +1,95 @@
-# DataShield – Cybersecurity Data Engineering Pipeline
+# DataShield — Cybersecurity Data Engineering Pipeline
 
-DataShield is an end-to-end Data Engineering project focused on collecting, processing, validating, cleaning, and analyzing cybersecurity vulnerability data from the **CISA Known Exploited Vulnerabilities (KEV) Catalog**.
+DataShield is an end-to-end Data Engineering project that collects, cleans, validates, stores, and analyzes cybersecurity vulnerability data using the CISA Known Exploited Vulnerabilities (KEV) Catalog.
 
-The project demonstrates how raw cybersecurity data can be transformed into structured and reliable data using Python, Pandas, SQL, PostgreSQL, and Apache Airflow.
+## Project Objectives
 
-## Project Overview
-
-The CISA KEV Catalog contains information about vulnerabilities that have been exploited in real-world attacks.
-
-DataShield aims to build a data pipeline that automates the collection and processing of this information while maintaining data quality and reliability.
+- Automate cybersecurity dataset ingestion.
+- Perform data cleaning and validation.
+- Implement reusable data quality checks.
+- Store structured data in MySQL.
+- Perform SQL-based cybersecurity analytics.
+- Build a reliable and reusable data pipeline.
 
 ## Technology Stack
 
-- **Programming Language:** Python
+- **Programming:** Python
 - **Data Processing:** Pandas
-- **Database:** PostgreSQL
+- **Database:** MySQL
 - **Query Language:** SQL
-- **Workflow Orchestration:** Apache Airflow
+- **Database Connectivity:** MySQL Connector
+- **Environment Management:** python-dotenv
 - **Logging:** Python Logging
 - **Version Control:** Git and GitHub
-- **Development Environment:** VS Code
 
-## Dataset
+## Project Architecture
 
-**Source:** [CISA Known Exploited Vulnerabilities Catalog](https://github.com/cisagov/kev-data)
-
-The dataset contains vulnerability information such as:
-
-- CVE ID
-- Vendor and Product
-- Vulnerability Name
-- Date Added
-- Due Date
-- Short Description
-- Required Action
-- Known Ransomware Campaign Usage
-- CWE Information
+1. **Data Ingestion:** Download CISA KEV vulnerability data.
+2. **Data Exploration:** Inspect dataset structure and data types.
+3. **Data Cleaning:** Handle missing values and convert date columns.
+4. **Data Validation:** Check required columns, duplicate CVEs, CVE formats, and date logic.
+5. **Data Quality:** Implement reusable validation functions.
+6. **Data Storage:** Load cleaned records into MySQL.
+7. **SQL Analytics:** Analyze vendors, products, ransomware associations, and vulnerability trends.
 
 ## Project Structure
 
 ```text
 DataShield/
-│
 ├── data/
 │   ├── raw/
-│   │   └── known_exploited_vulnerabilities.csv
-│   │
 │   └── processed/
-│       ├── cleaned_vulnerabilities.csv
-│       └── sample_vulnerabilities.csv
-│
 ├── notebooks/
-│
 ├── src/
-│   ├── ingest_data.py
 │   ├── inspect_data.py
 │   ├── validate_data.py
 │   ├── quality_checks.py
-│   └── data_utils.py
-│
+│   ├── ingest_data.py
+│   ├── data_utils.py
+│   ├── mysql_connection.py
+│   └── load_to_mysql.py
 ├── sql/
-│
+│   ├── analytics.sql
+│   └── views_procedures.sql
 ├── logs/
-│   └── pipeline.log
-│
-├── README.md
+├── .env.example
+├── .gitignore
 ├── requirements.txt
-└── .gitignore
+└── README.md
 ```
 
-## Implemented Features
+## SQL Analytics
 
-### 1. Automated Data Ingestion
+- Total vulnerability counts
+- Top vulnerable vendors and products
+- Ransomware-related vulnerability analysis
+- Year-wise vulnerability trends
+- SQL views and stored procedures
+- Ranking using SQL window functions
 
-- Downloads the latest CISA KEV dataset directly from the official GitHub repository.
-- Uses Python's `urllib.request` library.
-- Stores downloaded data in the `data/raw/` directory.
-- Includes exception handling and logging.
+## Dataset Source
 
-### 2. Data Exploration
+CISA Known Exploited Vulnerabilities Catalog:
 
-- Loads the dataset using Pandas.
-- Examines the first few records.
-- Checks dataset dimensions, column names, and data types.
-- Identifies missing values and duplicate records.
+https://github.com/cisagov/kev-data
 
-### 3. Data Validation
+The project uses publicly available cybersecurity vulnerability metadata.
 
-- Checks the presence of required columns.
-- Identifies missing values.
-- Detects duplicate CVE IDs.
-- Validates CVE ID formats.
-- Checks date fields and date logic.
-- Handles file-loading errors using exception handling.
+## Security
 
-### 4. Data Cleaning
-
-- Converts date columns into datetime format.
-- Replaces missing CWE values with `Unknown`.
-- Preserves the original raw dataset.
-- Saves the cleaned dataset separately in `data/processed/`.
-
-### 5. Reusable Data Quality Checks
-
-- Created reusable functions in `quality_checks.py`.
-- Checks required columns, missing values, and duplicate CVE IDs.
-- Validates CVE formats and date logic.
-- Integrates reusable checks into the validation pipeline.
-
-### 6. Logging and Error Handling
-
-- Uses Python's Logging module to record pipeline activities.
-- Records successful dataset downloads and verification.
-- Logs errors during file loading and ingestion.
-- Stores logs in `logs/pipeline.log`.
-
-### 7. Python Modules and File Handling
-
-- Created reusable utility functions in `data_utils.py`.
-- Practised importing functions from custom Python modules.
-- Implemented text file reading and writing.
-- Used write (`w`), read (`r`), and append (`a`) modes.
-- Used `with open()` for automatic file closing.
-- Read and wrote CSV files using Pandas.
-- Implemented file error handling using `try-except`.
-- Generated dataset summaries using reusable functions.
-
-## Pipeline Workflow
-
-```text
-CISA KEV Catalog
-       |
-       v
-Automated Data Ingestion
-       |
-       v
-Raw CSV Storage
-       |
-       v
-Data Exploration
-       |
-       v
-Data Validation
-       |
-       v
-Data Cleaning
-       |
-       v
-Data Quality Checks
-       |
-       v
-Processed CSV Storage
-       |
-       v
-Future: PostgreSQL and SQL Analytics
-```
-
-## Current Dataset Results
-
-The latest downloaded dataset was successfully processed and validated.
-
-| Metric | Result |
-|---|---:|
-| Total Records | 1,781 |
-| Total Columns | 12 |
-| Missing CWE Values Before Cleaning | 175 |
-| Missing CWE Values After Cleaning | 0 |
-| Duplicate CVE IDs | 0 |
-| Empty CVE IDs | 0 |
-| Invalid CVE IDs | 0 |
-| Invalid Dates | 0 |
-| Invalid Date Records | 0 |
-
-*Dataset counts may change as CISA updates its catalog.*
-
-## Installation and Execution
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/MahiGupta1207/DataShield.git
-cd DataShield
-```
-
-### 2. Create a Virtual Environment
-
-```bash
-python -m venv .venv
-```
-
-### 3. Activate the Environment
-
-For Windows PowerShell:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-### 4. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 5. Run Data Ingestion
-
-```bash
-python src/ingest_data.py
-```
-
-### 6. Run Data Exploration
-
-```bash
-python src/inspect_data.py
-```
-
-### 7. Run Data Validation and Cleaning
-
-```bash
-python src/validate_data.py
-```
-
-The cleaned dataset will be saved in:
-
-```text
-data/processed/cleaned_vulnerabilities.csv
-```
+Database credentials are stored in a local `.env` file and excluded from Git using `.gitignore`. A `.env.example` template is provided without real credentials.
 
 ## Future Enhancements
 
-- Store processed vulnerability data in PostgreSQL.
-- Perform SQL-based cybersecurity data analysis.
-- Build automated workflows using Apache Airflow.
-- Implement additional data quality checks and testing.
-- Add pipeline monitoring and reporting.
-- Improve incremental data loading and historical tracking.
+- Apache Airflow pipeline orchestration
+- Advanced monitoring and logging
+- Automated data quality reporting
+- Data visualization dashboards
 
-## License and Data Attribution
+## Project Status
 
-Dataset sourced from the [CISA KEV Catalog](https://github.com/cisagov/kev-data), identified as CC0 1.0 Universal.
+Python ingestion, cleaning, validation, MySQL integration, and initial SQL analytics have been implemented.
 
-DataShield is an independent educational project and is not affiliated with or endorsed by CISA or DHS.
+## License and Attribution
 
-## Author
-
-**Mahi Gupta**
-
-GitHub: [MahiGupta1207](https://github.com/MahiGupta1207)
+Dataset source: CISA KEV Catalog. Refer to the official repository for its licensing and attribution information.
