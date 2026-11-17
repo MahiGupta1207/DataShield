@@ -22,6 +22,25 @@ DataShield is an end-to-end Data Engineering project that collects, cleans, vali
 - **Logging:** Python Logging
 - **Version Control:** Git and GitHub
 
+## Pipeline Execution
+
+DataShield includes an automated pipeline runner that executes the complete workflow sequentially.
+
+Run the following command from the project root:
+
+```bash
+python src/run_pipeline.py
+```
+
+The pipeline automatically performs:
+
+1. Downloads the latest CISA KEV dataset.
+2. Cleans and validates vulnerability records.
+3. Loads processed data into the MySQL database.
+4. Displays execution status for each stage.
+
+This reduces manual execution and makes the data pipeline easier to run.
+
 ## Project Architecture
 
 1. **Data Ingestion:** Download CISA KEV vulnerability data.
@@ -31,6 +50,7 @@ DataShield is an end-to-end Data Engineering project that collects, cleans, vali
 5. **Data Quality:** Implement reusable validation functions.
 6. **Data Storage:** Load cleaned records into MySQL.
 7. **SQL Analytics:** Analyze vendors, products, ransomware associations, and vulnerability trends.
+8. **Pipeline Automation:** Execute ingestion, validation, cleaning, and MySQL loading sequentially using a single Python script.
 
 ## Project Structure
 
@@ -88,7 +108,13 @@ Database credentials are stored in a local `.env` file and excluded from Git usi
 
 ## Project Status
 
-Python ingestion, cleaning, validation, MySQL integration, and initial SQL analytics have been implemented.
+Implemented:
+- Automated data ingestion
+- Data cleaning and validation
+- Reusable data quality checks
+- MySQL database integration
+- SQL analytics, views, and stored procedures
+- Automated pipeline execution
 
 ## License and Attribution
 
