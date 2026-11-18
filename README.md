@@ -31,6 +31,16 @@ Run the following command from the project root:
 ```bash
 python src/run_pipeline.py
 ```
+## Logging and Error Handling
+
+DataShield uses Python's logging module to maintain pipeline execution records.
+
+- Logs pipeline start and completion.
+- Records successful execution of individual stages.
+- Captures errors when a script fails.
+- Stops execution when a pipeline stage encounters an error.
+
+Logs are stored in `logs/pipeline.log`.
 
 The pipeline automatically performs:
 
@@ -51,6 +61,8 @@ This reduces manual execution and makes the data pipeline easier to run.
 6. **Data Storage:** Load cleaned records into MySQL.
 7. **SQL Analytics:** Analyze vendors, products, ransomware associations, and vulnerability trends.
 8. **Pipeline Automation:** Execute ingestion, validation, cleaning, and MySQL loading sequentially using a single Python script.
+- Logging and Monitoring: Tracks pipeline execution, successful stages, and errors using Python logging.
+- Error Handling: Detects failed tasks and stops pipeline execution to prevent incomplete processing.
 
 ## Project Structure
 
